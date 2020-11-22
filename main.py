@@ -6,7 +6,7 @@ import requests
 class PicPackage(object):
     # 图包
     def __init__(self, titile, url):
-        self.titile = titile
+        self.titile = titile.strip()
         self.url = url
         self.picList = None
         self.category1 = None
