@@ -64,7 +64,9 @@ class User(object):
         picList = []
         for pic in pics:
             url = pic.xpath('./a/img/@data-original')[0]
-            picList.append(Pic(url.replace("_120_80", "")))
+            # 从url中去除限制图片大小的字符
+            rindex = url.rfind(".")
+            picList.append(Pic(url[:rindex - 8] + url[rindex:]))
         return picList
 
     def downloadPicPackage(self, picPackage):
