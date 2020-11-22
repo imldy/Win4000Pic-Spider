@@ -95,7 +95,6 @@ class User(object):
                     res = self.getCategoryWeb()
                     # 获取当前类别当前页面所有的图包，并获取是否存在下一页
                     picPackageList, nextExists = self.extraPicPackageList(res)
-                    page += 1
                     # 遍历第一页所有图包
                     for picPackage in picPackageList:
                         res = self.getPicPackageWeb(picPackage)
@@ -107,8 +106,9 @@ class User(object):
                         picPackage.category1 = category1
                         picPackage.category2 = category2
                         picPackage.creatDirectory()
-                        print("开始下载图包: {}".format(picPackage.titile))
+                        print("开始下载图包: {}-{}-{}-{}".format(category1, category2, page, picPackage.titile))
                         self.downloadPicPackage(picPackage)
+                    page += 1
 
 
 if __name__ == '__main__':
