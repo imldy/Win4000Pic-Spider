@@ -27,13 +27,13 @@ class Pic(object):
 
 
 class User(object):
-    def __init__(self):
+    def __init__(self, headCategories, centralCategories):
         self.session = requests.session()
         self.target = {
             # 网页头部的分类
-            "category1_list": ["wallpaper"],
+            "category1_list": headCategories,
             # 网页中部的分类
-            "category2_list": ["2285"],
+            "category2_list": centralCategories,
         }
         self.currentCategoryUrl = ""
 
@@ -115,5 +115,8 @@ if __name__ == '__main__':
     dir = "pic"
     if not os.path.exists(dir):
         os.mkdir(dir)
-    user = User()
+    confpath = "conf.json"
+    with open(confpath, "r", encoding="utf-8") as f:
+        conf = eval(f.read())
+    user = User(conf["headCategories"], conf["centralCategories"])
     user.start()
