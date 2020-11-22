@@ -33,7 +33,7 @@ class User(object):
             # 网页头部的分类
             "category1_list": ["wallpaper"],
             # 网页中部的分类
-            "category2_list": ["191", "2357"],
+            "category2_list": ["2285"],
         }
         self.currentCategoryUrl = ""
 
@@ -69,9 +69,16 @@ class User(object):
     def downloadPicPackage(self, picPackage):
         for pic in picPackage.picList:
             pic.path = "{}/{}".format(picPackage.path, pic.name)
-            with open(pic.path, "wb") as f:
-                print(pic.url, pic.path)
-                f.write(self.session.get(url=pic.url).content)
+            print(pic.url, end=" ")
+            if self.picExists(pic):
+                print("已存在：{}".format(pic.path))
+            else:
+                with open(pic.path, "wb") as f:
+                    f.write(self.session.get(url=pic.url).content)
+                print("保存至：{}".format(pic.path))
+
+    def picExists(self, pic):
+        return os.path.exists(pic.path)
 
     def start(self):
         # 循环大类别
