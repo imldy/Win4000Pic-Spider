@@ -88,6 +88,9 @@ class User(object):
             for category2 in self.target["category2_list"]:
                 page = 1
                 nextExists = True
+                categorypath = "{}/{}.{}".format(dir, category1, category2)
+                if not os.path.exists(categorypath):
+                    os.mkdir(categorypath)
                 while nextExists:
                     # 开始请求
                     self.currentCategoryUrl = "http://www.win4000.com/{}_{}_0_0_{}.html".format(category1, category2,
