@@ -50,7 +50,8 @@ class User(object):
             titile = picPackage.xpath('./a/@title')[0]
             url = picPackage.xpath('./a/@href')[0]
             picPackageList.append(PicPackage(titile, url))
-        return picPackageList
+        nextExists = True if len(HTML.xpath('//a[@class="next"]')) == 1 else False
+        return picPackageList, nextExists
 
     def getPicPackageWeb(self, picPackage):
         res = self.session.get(url=picPackage.url)
@@ -85,23 +86,29 @@ class User(object):
         for category1 in self.target["category1_list"]:
             # 循环小类别
             for category2 in self.target["category2_list"]:
-                # 开始请求第一页
-                self.currentCategoryUrl = "http://www.win4000.com/{}_{}_0_0_1.html".format(category1, category2)
-                res = self.getCategoryWeb()
-                picPackageList = self.extraPicPackageList(res)
-                # 遍历第一页所有图包
-                for picPackage in picPackageList:
-                    res = self.getPicPackageWeb(picPackage)
-                    # 获取当前图包的所有图片
-                    picList = self.extraPicList(res)
-                    # 给当前图包添加上自己的图片
-                    picPackage.picList = picList
-                    # 给图包设定迟来的两个分类
-                    picPackage.category1 = category1
-                    picPackage.category2 = category2
-                    picPackage.creatDirectory()
-                    print("开始下载图包: {}".format(picPackage.titile))
-                    self.downloadPicPackage(picPackage)
+                page = 1
+                nextExists = True
+                while nextExists:
+                    # 开始请求
+                    self.currentCategoryUrl = "http://www.win4000.com/{}_{}_0_0_{}.html".format(category1, category2,
+                                                                                                page)
+                    res = self.getCategoryWeb()
+                    # 获取当前类别当前页面所有的图包，并获取是否存在下一页
+                    picPackageList, nextExists = self.extraPicPackageList(res)
+                    page += 1
+                    # 遍历第一页所有图包
+                    for picPackage in picPackageList:
+                        res = self.getPicPackageWeb(picPackage)
+                        # 获取当前图包的所有图片
+                        picList = self.extraPicList(res)
+                        # 给当前图包添加上自己的图片
+                        picPackage.picList = picList
+                        # 给图包设定迟来的两个分类
+                        picPackage.category1 = category1
+                        picPackage.category2 = category2
+                        picPackage.creatDirectory()
+                        print("开始下载图包: {}".format(picPackage.titile))
+                        self.downloadPicPackage(picPackage)
 
 
 if __name__ == '__main__':
