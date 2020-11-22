@@ -44,7 +44,7 @@ class User(object):
     def extraPicPackageList(self, res):
         # 提取图包，返回图包对象的列表
         HTML = etree.HTML(res.text)
-        picPackages = HTML.xpath('//div[@class="list_cont Left_list_cont"]//div[@class="tab_box"]/div/ul/li')
+        picPackages = HTML.xpath('//div[contains(@class,"list_cont Left_list_cont")]//div[@class="tab_box"]/div/ul/li')
         picPackageList = []
         for picPackage in picPackages:
             titile = picPackage.xpath('./a/@title')[0]
@@ -60,7 +60,7 @@ class User(object):
     def extraPicList(self, res):
         HTML = etree.HTML(res.text)
         # pics懒得全称了
-        pics = HTML.xpath('//div[@class="scroll-img-cont"]/ul/li')
+        pics = HTML.xpath('//div[contains(@class,"scroll-img-cont")]/ul/li')
         picList = []
         for pic in pics:
             url = pic.xpath('./a/img/@data-original')[0]
